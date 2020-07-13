@@ -13,5 +13,10 @@ Vue.config.productionTip = false;
 new Vue({
     el: '#app',
     router: router,
-    render: h => h(App)
+    render: h => h(App),
+    created() {
+        if (this.$router.options.routes.length === 1) {
+            this.$router.replace('/dashboard');
+        }
+    }
 });

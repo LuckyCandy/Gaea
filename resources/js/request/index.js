@@ -14,7 +14,11 @@ axios.interceptors.request.use(
     config => {
         ViewUI.LoadingBar.start();
         config.timeout = 10 * 1000;
-        config.headers.Authorization = 'Bearer ' + window.localStorage.getItem('gaea.token');
+        let store = window.localStorage.getItem('gaea.user');
+        if (store) {
+            let info = JSON.parse(store);
+            config.headers.Authorization = 'Bearer ' + info.token;
+        }
 
         if (
             config.method.toLocaleUpperCase() === 'POST' ||
@@ -41,7 +45,9 @@ axios.interceptors.response.use(
         if (response.data.code === 403) {
             ViewUI.LoadingBar.finish();
             setTimeout(() => {
-                router.push('/');
+                if (router.currentRoute.path !== '/dashboard') {
+                    router.push('/');
+                }
                 EBUS.$emit('EVENT-USER-UNLOGIN', '');
             }, 2000);
         }
@@ -67,6 +73,7 @@ axios.interceptors.response.use(
             ViewUI.Message.error(res.msg);
             return Promise.reject(res);
         }
+        console.log(error);
         ViewUI.Message.error('Unknown Error Occur!');
         return Promise.reject(error);
     }
@@ -74,10 +81,15 @@ axios.interceptors.response.use(
 
 export default function(method, url, data) {
     method = method.toLocaleString();
-    return axios.request({
-        method,
-        url,
-        data
-    });
+    if (method === 'post') {
+        return axios.request({
+            method,
+            url,
+            data
+        });
+    } else {
+        return axios.get(url, {params: data})
+    }
+
 };
 

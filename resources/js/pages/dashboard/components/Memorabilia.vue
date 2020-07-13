@@ -7,6 +7,21 @@
             </p>
             <Timeline :style="{maxHeight: '300px', overflowY: 'scroll', position: 'relative', right: '-25px'}">
                 <TimelineItem>
+                    <Icon type="ios-cog" size="15" slot="dot"/>
+                    <p><b>2020年7月7</b></p>
+                    <p style="font-size: 13px;">完善超管功能</p>
+                </TimelineItem>
+                <TimelineItem>
+                    <Icon type="ios-checkmark-circle-outline" size="15" slot="dot"/>
+                    <p><b>2020年7月5</b></p>
+                    <p style="font-size: 13px;">Redis管理工具完成</p>
+                </TimelineItem>
+                <TimelineItem>
+                    <Icon type="ios-cube" size="15" slot="dot"/>
+                    <p><b>2020年6月5</b></p>
+                    <p style="font-size: 13px;">开发Redis管理工具</p>
+                </TimelineItem>
+                <TimelineItem>
                     <Icon type="ios-ribbon" size="15" slot="dot"/>
                     <p><b>2020年6月4</b></p>
                     <p style="font-size: 13px;">页面布局完成，增加修改信息功能</p>

@@ -8,13 +8,13 @@ const routes = [
         path: '/', name: 'index', meta: {title: 'Gaea'}, component: Layout, redirect: '/dashboard',
         children: [
             {
-                path: '/dashboard', name: 'dashboard', component: Dashboard
+                path: 'dashboard', name: 'dashboard', component: Dashboard
             },
             {
-                path: '/redis', name: 'redis', component: Redis,
+                path: 'redis', name: 'redis', component: Redis,
             },
             {
-                path: '/redis/action', name: 'redis-action', component: RedisAction
+                path: 'redis/action', name: 'redis-action', component: RedisAction
             }
         ]
     }

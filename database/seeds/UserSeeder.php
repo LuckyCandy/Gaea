@@ -11,10 +11,14 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
+        $date = \Illuminate\Support\Carbon::now();
         \Illuminate\Support\Facades\DB::table('users')->insert([
             'name' => 'admin',
             'email' => 'admin@gaea.com',
-            'password' => bcrypt('123456')
+            'is_admin' => 1,
+            'password' => bcrypt('123456'),
+            'created_at' => $date,
+            'updated_at' => $date,
         ]);
     }
 }

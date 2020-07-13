@@ -13,6 +13,14 @@
                     </a>
                     <List>
                         <ListItem>
+                            <ListItemMeta avatar="/images/icon-system.png" title="超管" description="点击右侧进入管理界面" />
+                            <template slot="action">
+                                <li>
+                                    <router-link to="/admin">跳转</router-link>
+                                </li>
+                            </template>
+                        </ListItem>
+                        <ListItem>
                             <ListItemMeta avatar="/images/icon-person.png" title="昵称" :description="userInfo.name" />
                         </ListItem>
                         <ListItem>
@@ -68,6 +76,14 @@
                             <ListItem>
                                 <ListItemMeta avatar="/images/icon-email.png" title="账号" :description="userInfo.email" />
                             </ListItem>
+                            <ListItem v-if="Number(userInfo.is_admin) === 1">
+                                <ListItemMeta avatar="/images/icon-system.png" title="超管" description="点击右侧进入管理界面" />
+                                <template slot="action">
+                                    <li>
+                                        <router-link to="/admin/user/list">跳转</router-link>
+                                    </li>
+                                </template>
+                            </ListItem>
                         </List>
                     </Card>
                     <Memorabilia></Memorabilia>
@@ -116,13 +132,9 @@
         },
         created() {
             this.isShowInOneCol = document.body.clientWidth < 640;
-            /* 获取登录人信息 */
-            getInfo().then(response => {
-                this.userInfo = response.data;
-                this.userInfo.avatar = '/images/login.png';
-            }).catch(() => {
-                EBUS.$emit('EVENT-USER-UNLOGIN');
-            });
+            if (window.localStorage.getItem('gaea.user')) {
+                this.userInfo = JSON.parse(window.localStorage.getItem('gaea.user'))
+            }
         },
         beforeCreate() {
             EBUS.$on('EVENT-USER-LOGIN', (data) => {

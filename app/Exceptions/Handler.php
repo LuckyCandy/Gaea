@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -62,7 +63,9 @@ class Handler extends ExceptionHandler
         if ($request->expectsJson() || Str::startsWith($request->route()->uri(), 'api/')) {
             if ($exception instanceof  CustomException) {
                 return response()->jsr(500, [], $exception->getMessage());
-            } elseif ($exception instanceof LoginFailedException) {
+            } elseif ($exception instanceof AuthorizationException) {
+                return response()->jsr(408, [], '您无权执行此操作');
+            } elseif($exception instanceof LoginFailedException) {
                 return response()->jsr(500, [], $exception->getMessage());
             } elseif ($exception instanceof AuthenticationException) {
                 return response()->jsr(403, [], '令牌已过期，需要重新登录');

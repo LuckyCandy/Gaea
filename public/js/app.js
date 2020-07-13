@@ -1885,6 +1885,10 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _api_login__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../api/login */ "./resources/js/api/login.js");
+/* harmony import */ var _api_user__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../api/user */ "./resources/js/api/user.js");
+/* harmony import */ var _router_admin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../router/admin */ "./resources/js/router/admin.js");
+/* harmony import */ var _router_routes__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../router/routes */ "./resources/js/router/routes.js");
+/* harmony import */ var _router_error__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../router/error */ "./resources/js/router/error.js");
 //
 //
 //
@@ -1925,21 +1929,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
+
+
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'App',
   data: function data() {
     return {
       isShowLogin: false,
       isDoLogin: false,
-      isWindowContinueChange: false,
-      contentStyle: {
-        height: '',
-        display: 'flex',
-        minHeight: '500px',
-        minWidth: '900px',
-        overflow: 'hidden',
-        background: '#f2f2f2'
-      },
       formData: {
         email: '',
         password: ''
@@ -1962,16 +1961,34 @@ __webpack_require__.r(__webpack_exports__);
       }
     };
   },
-  beforeCreate: function beforeCreate() {
+  created: function created() {
     var _this = this;
 
-    EBUS.$on('EVENT-USER-UNLOGIN', function () {
+    /* 获取登录人信息 */
+    Object(_api_user__WEBPACK_IMPORTED_MODULE_1__["getInfo"])().then(function (response) {
+      _this.user.avatar = '/images/login.png';
+      /* 登录成功，通知组件刷新 */
+
+      EBUS.$emit('EVENT-USER-LOGIN', response.data);
+
+      if (_this.$router.options.routes.length === 1) {
+        if (Number(response.data.is_admin) === 1) {
+          _router_routes__WEBPACK_IMPORTED_MODULE_3__["default"].push.apply(_router_routes__WEBPACK_IMPORTED_MODULE_3__["default"], [_router_admin__WEBPACK_IMPORTED_MODULE_2__["default"], _router_error__WEBPACK_IMPORTED_MODULE_4__["default"]]);
+
+          _this.$router.addRoutes(_router_admin__WEBPACK_IMPORTED_MODULE_2__["default"]);
+        } else {
+          _router_routes__WEBPACK_IMPORTED_MODULE_3__["default"].push.apply(_router_routes__WEBPACK_IMPORTED_MODULE_3__["default"], _router_error__WEBPACK_IMPORTED_MODULE_4__["default"]);
+        }
+
+        _this.$router.options.routes = _router_routes__WEBPACK_IMPORTED_MODULE_3__["default"];
+
+        _this.$router.addRoutes(_router_error__WEBPACK_IMPORTED_MODULE_4__["default"]);
+      }
+    })["catch"](function () {
+      _this.$router.options.routes = _router_routes__WEBPACK_IMPORTED_MODULE_3__["default"];
       _this.user.avatar = '/images/un-login.png';
       _this.isShowLogin = true;
     });
-  },
-  beforeDestroy: function beforeDestroy() {
-    EBUS.$off('EVENT-USER-UNLOGIN');
   },
   methods: {
     handleLogin: function handleLogin() {
@@ -1981,7 +1998,7 @@ __webpack_require__.r(__webpack_exports__);
         if (valid) {
           _this2.isDoLogin = true;
           Object(_api_login__WEBPACK_IMPORTED_MODULE_0__["login"])(_this2.formData).then(function (response) {
-            window.localStorage.setItem('gaea.token', response.data.token);
+            window.localStorage.setItem('gaea.user', JSON.stringify(response.data));
             _this2.user.name = response.data.name;
             _this2.user.avatar = '/images/login.png';
             _this2.isDoLogin = false;
@@ -1997,6 +2014,20 @@ __webpack_require__.r(__webpack_exports__);
 
 
             EBUS.$emit('EVENT-USER-LOGIN', response.data);
+
+            if (_this2.$router.options.routes.length === 1) {
+              if (Number(response.data.is_admin) === 1) {
+                _router_routes__WEBPACK_IMPORTED_MODULE_3__["default"].push.apply(_router_routes__WEBPACK_IMPORTED_MODULE_3__["default"], [_router_admin__WEBPACK_IMPORTED_MODULE_2__["default"], _router_error__WEBPACK_IMPORTED_MODULE_4__["default"]]);
+
+                _this2.$router.addRoutes(_router_admin__WEBPACK_IMPORTED_MODULE_2__["default"]);
+              } else {
+                _router_routes__WEBPACK_IMPORTED_MODULE_3__["default"].push.apply(_router_routes__WEBPACK_IMPORTED_MODULE_3__["default"], _router_error__WEBPACK_IMPORTED_MODULE_4__["default"]);
+              }
+
+              _this2.$router.options.routes = _router_routes__WEBPACK_IMPORTED_MODULE_3__["default"];
+
+              _this2.$router.addRoutes(_router_error__WEBPACK_IMPORTED_MODULE_4__["default"]);
+            }
           })["catch"](function (error) {
             _this2.isDoLogin = false;
           });
@@ -2028,6 +2059,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_ModifyUserInfo__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/ModifyUserInfo */ "./resources/js/pages/dashboard/components/ModifyUserInfo.vue");
 /* harmony import */ var _components_Memorabilia__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/Memorabilia */ "./resources/js/pages/dashboard/components/Memorabilia.vue");
 /* harmony import */ var _api_user__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../api/user */ "./resources/js/api/user.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2149,23 +2196,17 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   created: function created() {
-    var _this2 = this;
-
     this.isShowInOneCol = document.body.clientWidth < 640;
-    /* 获取登录人信息 */
 
-    Object(_api_user__WEBPACK_IMPORTED_MODULE_2__["getInfo"])().then(function (response) {
-      _this2.userInfo = response.data;
-      _this2.userInfo.avatar = '/images/login.png';
-    })["catch"](function () {
-      EBUS.$emit('EVENT-USER-UNLOGIN');
-    });
+    if (window.localStorage.getItem('gaea.user')) {
+      this.userInfo = JSON.parse(window.localStorage.getItem('gaea.user'));
+    }
   },
   beforeCreate: function beforeCreate() {
-    var _this3 = this;
+    var _this2 = this;
 
     EBUS.$on('EVENT-USER-LOGIN', function (data) {
-      _this3.userInfo = data;
+      _this2.userInfo = data;
     });
   },
   beforeDestroy: function beforeDestroy() {
@@ -2192,6 +2233,21 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -52579,6 +52635,34 @@ var render = function() {
                           [
                             _c("ListItemMeta", {
                               attrs: {
+                                avatar: "/images/icon-system.png",
+                                title: "超管",
+                                description: "点击右侧进入管理界面"
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("template", { slot: "action" }, [
+                              _c(
+                                "li",
+                                [
+                                  _c(
+                                    "router-link",
+                                    { attrs: { to: "/admin" } },
+                                    [_vm._v("跳转")]
+                                  )
+                                ],
+                                1
+                              )
+                            ])
+                          ],
+                          2
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "ListItem",
+                          [
+                            _c("ListItemMeta", {
+                              attrs: {
                                 avatar: "/images/icon-person.png",
                                 title: "昵称",
                                 description: _vm.userInfo.name
@@ -52789,7 +52873,41 @@ var render = function() {
                                   })
                                 ],
                                 1
-                              )
+                              ),
+                              _vm._v(" "),
+                              Number(_vm.userInfo.is_admin) === 1
+                                ? _c(
+                                    "ListItem",
+                                    [
+                                      _c("ListItemMeta", {
+                                        attrs: {
+                                          avatar: "/images/icon-system.png",
+                                          title: "超管",
+                                          description: "点击右侧进入管理界面"
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c("template", { slot: "action" }, [
+                                        _c(
+                                          "li",
+                                          [
+                                            _c(
+                                              "router-link",
+                                              {
+                                                attrs: {
+                                                  to: "/admin/user/list"
+                                                }
+                                              },
+                                              [_vm._v("跳转")]
+                                            )
+                                          ],
+                                          1
+                                        )
+                                      ])
+                                    ],
+                                    2
+                                  )
+                                : _vm._e()
                             ],
                             1
                           )
@@ -52866,6 +52984,61 @@ var render = function() {
               }
             },
             [
+              _c(
+                "TimelineItem",
+                [
+                  _c("Icon", {
+                    attrs: { slot: "dot", type: "ios-cog", size: "15" },
+                    slot: "dot"
+                  }),
+                  _vm._v(" "),
+                  _c("p", [_c("b", [_vm._v("2020年7月7")])]),
+                  _vm._v(" "),
+                  _c("p", { staticStyle: { "font-size": "13px" } }, [
+                    _vm._v("完善超管功能")
+                  ])
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "TimelineItem",
+                [
+                  _c("Icon", {
+                    attrs: {
+                      slot: "dot",
+                      type: "ios-checkmark-circle-outline",
+                      size: "15"
+                    },
+                    slot: "dot"
+                  }),
+                  _vm._v(" "),
+                  _c("p", [_c("b", [_vm._v("2020年7月5")])]),
+                  _vm._v(" "),
+                  _c("p", { staticStyle: { "font-size": "13px" } }, [
+                    _vm._v("Redis管理工具完成")
+                  ])
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "TimelineItem",
+                [
+                  _c("Icon", {
+                    attrs: { slot: "dot", type: "ios-cube", size: "15" },
+                    slot: "dot"
+                  }),
+                  _vm._v(" "),
+                  _c("p", [_c("b", [_vm._v("2020年6月5")])]),
+                  _vm._v(" "),
+                  _c("p", { staticStyle: { "font-size": "13px" } }, [
+                    _vm._v("开发Redis管理工具")
+                  ])
+                ],
+                1
+              ),
+              _vm._v(" "),
               _c(
                 "TimelineItem",
                 [
@@ -70593,13 +70766,17 @@ function op(body) {
 /*!**********************************!*\
   !*** ./resources/js/api/user.js ***!
   \**********************************/
-/*! exports provided: getInfo, update */
+/*! exports provided: getInfo, update, list, block, passwdReset, addUser */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getInfo", function() { return getInfo; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "update", function() { return update; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "list", function() { return list; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "block", function() { return block; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "passwdReset", function() { return passwdReset; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addUser", function() { return addUser; });
 /* harmony import */ var _request__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../request */ "./resources/js/request/index.js");
 
 /* 获取用户信息 */
@@ -70611,6 +70788,22 @@ function getInfo() {
 
 function update(body) {
   return Object(_request__WEBPACK_IMPORTED_MODULE_0__["default"])('post', '/api/user/update', body);
+}
+/* 更新用户信息 */
+
+function list(query) {
+  return Object(_request__WEBPACK_IMPORTED_MODULE_0__["default"])('get', '/api/user/list', query);
+}
+/* 禁用|解禁用户 */
+
+function block(id) {
+  return Object(_request__WEBPACK_IMPORTED_MODULE_0__["default"])('post', '/api/user/block/' + id);
+}
+function passwdReset(body) {
+  return Object(_request__WEBPACK_IMPORTED_MODULE_0__["default"])('post', '/api/user/password/reset', body);
+}
+function addUser(body) {
+  return Object(_request__WEBPACK_IMPORTED_MODULE_0__["default"])('post', '/api/user/create', body);
 }
 
 /***/ }),
@@ -70646,6 +70839,11 @@ new Vue({
   router: _router__WEBPACK_IMPORTED_MODULE_2__["default"],
   render: function render(h) {
     return h(_app_vue__WEBPACK_IMPORTED_MODULE_4__["default"]);
+  },
+  created: function created() {
+    if (this.$router.options.routes.length === 1) {
+      this.$router.replace('/dashboard');
+    }
   }
 });
 
@@ -72361,7 +72559,12 @@ axios__WEBPACK_IMPORTED_MODULE_0___default.a.defaults.baseURL = '';
 axios__WEBPACK_IMPORTED_MODULE_0___default.a.interceptors.request.use(function (config) {
   view_design__WEBPACK_IMPORTED_MODULE_4___default.a.LoadingBar.start();
   config.timeout = 10 * 1000;
-  config.headers.Authorization = 'Bearer ' + window.localStorage.getItem('gaea.token');
+  var store = window.localStorage.getItem('gaea.user');
+
+  if (store) {
+    var info = JSON.parse(store);
+    config.headers.Authorization = 'Bearer ' + info.token;
+  }
 
   if (config.method.toLocaleUpperCase() === 'POST' || config.method.toLocaleUpperCase() === 'PUT' || config.method.toLocaleUpperCase() === 'DELETE') {
     config.data = qs__WEBPACK_IMPORTED_MODULE_3___default.a.stringify(config.data);
@@ -72384,7 +72587,10 @@ axios__WEBPACK_IMPORTED_MODULE_0___default.a.interceptors.response.use(function 
   if (response.data.code === 403) {
     view_design__WEBPACK_IMPORTED_MODULE_4___default.a.LoadingBar.finish();
     setTimeout(function () {
-      _router__WEBPACK_IMPORTED_MODULE_2__["default"].push('/');
+      if (_router__WEBPACK_IMPORTED_MODULE_2__["default"].currentRoute.path !== '/dashboard') {
+        _router__WEBPACK_IMPORTED_MODULE_2__["default"].push('/');
+      }
+
       EBUS.$emit('EVENT-USER-UNLOGIN', '');
     }, 2000);
   }
@@ -72412,18 +72618,91 @@ axios__WEBPACK_IMPORTED_MODULE_0___default.a.interceptors.response.use(function 
     return Promise.reject(_res);
   }
 
+  console.log(error);
   view_design__WEBPACK_IMPORTED_MODULE_4___default.a.Message.error('Unknown Error Occur!');
   return Promise.reject(error);
 });
 /* harmony default export */ __webpack_exports__["default"] = (function (method, url, data) {
   method = method.toLocaleString();
-  return axios__WEBPACK_IMPORTED_MODULE_0___default.a.request({
-    method: method,
-    url: url,
-    data: data
-  });
+
+  if (method === 'post') {
+    return axios__WEBPACK_IMPORTED_MODULE_0___default.a.request({
+      method: method,
+      url: url,
+      data: data
+    });
+  } else {
+    return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(url, {
+      params: data
+    });
+  }
 });
 ;
+
+/***/ }),
+
+/***/ "./resources/js/router/admin.js":
+/*!**************************************!*\
+  !*** ./resources/js/router/admin.js ***!
+  \**************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var adminRoutes = [{
+  path: '/admin',
+  meta: {
+    title: 'Admin-Gaea'
+  },
+  component: function component() {
+    return __webpack_require__.e(/*! import() */ 1).then(__webpack_require__.bind(null, /*! ../components/AdminLayout */ "./resources/js/components/AdminLayout.vue"));
+  },
+  redirect: '/admin/user/list',
+  children: [{
+    path: 'user/list',
+    name: 'admin-user-list',
+    component: function component() {
+      return __webpack_require__.e(/*! import() */ 0).then(__webpack_require__.bind(null, /*! ../pages/admin/UserList */ "./resources/js/pages/admin/UserList.vue"));
+    }
+  }, {
+    path: 'user/create',
+    name: 'admin-user-create',
+    component: function component() {
+      return __webpack_require__.e(/*! import() */ 0).then(__webpack_require__.bind(null, /*! ../pages/admin/UserList */ "./resources/js/pages/admin/UserList.vue"));
+    }
+  }, {
+    path: 'log/list',
+    name: 'admin-log-list',
+    component: function component() {
+      return __webpack_require__.e(/*! import() */ 0).then(__webpack_require__.bind(null, /*! ../pages/admin/UserList */ "./resources/js/pages/admin/UserList.vue"));
+    }
+  }]
+}];
+/* harmony default export */ __webpack_exports__["default"] = (adminRoutes);
+
+/***/ }),
+
+/***/ "./resources/js/router/error.js":
+/*!**************************************!*\
+  !*** ./resources/js/router/error.js ***!
+  \**************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var errorRoutes = [{
+  path: '*',
+  meta: {
+    title: 'NotFound'
+  },
+  component: function component() {
+    return __webpack_require__.e(/*! import() */ 2).then(__webpack_require__.bind(null, /*! ../components/Error */ "./resources/js/components/Error.vue"));
+  },
+  name: '404'
+}];
+/* harmony default export */ __webpack_exports__["default"] = (errorRoutes);
 
 /***/ }),
 
@@ -72477,15 +72756,15 @@ var routes = [{
   component: _components_Layout__WEBPACK_IMPORTED_MODULE_0__["default"],
   redirect: '/dashboard',
   children: [{
-    path: '/dashboard',
+    path: 'dashboard',
     name: 'dashboard',
     component: _pages_dashboard_Dashboard__WEBPACK_IMPORTED_MODULE_1__["default"]
   }, {
-    path: '/redis',
+    path: 'redis',
     name: 'redis',
     component: _pages_redis_manager_Redis__WEBPACK_IMPORTED_MODULE_2__["default"]
   }, {
-    path: '/redis/action',
+    path: 'redis/action',
     name: 'redis-action',
     component: _pages_redis_manager_Action__WEBPACK_IMPORTED_MODULE_3__["default"]
   }]

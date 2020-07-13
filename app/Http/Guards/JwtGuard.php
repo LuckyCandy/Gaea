@@ -10,6 +10,7 @@ namespace App\Http\Guards;
 
 
 use App\Classes\Jwt;
+use App\Exceptions\CustomException;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\TokenGuard;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -75,10 +76,15 @@ class JwtGuard extends TokenGuard
      * @param  mixed  $user
      * @param  array  $credentials
      * @return bool
+     * @throws
      */
     protected function hasValidCredentials($user, $credentials)
     {
         $validated = ! is_null($user) && $this->provider->validateCredentials($user, $credentials);
+
+        if ($validated && $user->isBlocked()) {
+            throw new CustomException('您的账户已被锁定，请联系管理员');
+        }
 
         return $validated;
     }
@@ -120,6 +126,10 @@ class JwtGuard extends TokenGuard
 
         if (! empty($token) && $credential = Jwt::getPayloadFrom($token)) {
             $user = $this->provider->retrieveByCredentials($credential);
+        }
+
+        if ($user && $user->isBlocked()) {
+            return null;
         }
 
         return $this->user = $user;

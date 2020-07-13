@@ -18,11 +18,24 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', 'LoginController@login');
 /* 登录组 */
 Route::middleware('auth:api')->group(function (){
+    Route::middleware('admin.action')->group(function (){
+        /* 根据id获取用户信息 */
+        Route::get('/user/{user}', 'UserController@getById')->where('user', '[0-9]+');
+        /* 根据id修改用户信息 */
+        Route::post('/user/update/{id}', 'UserController@update');
+        /* 获取用户列表 */
+        Route::get('/user/list', 'UserController@list');
+        /* 禁用or解禁用户 */
+        Route::post('/user/block/{user}', 'UserController@blockOrNot')->where('user', '[0-9]+');
+        /* 重置密码 */
+        Route::post('/user/password/reset', 'UserController@resetPassword');
+        /* 新增用户 */
+        Route::post('/user/create', 'UserController@create');
+    });
     /* 获取用户信息 */
     Route::get('/user', 'UserController@user');
     /* 修改用户信息 */
     Route::post('/user/update', 'UserController@update');
-
     /*Redis Manager*/
     Route::namespace('Redis')->prefix('redis')->group(function(){
         /* 创建 */

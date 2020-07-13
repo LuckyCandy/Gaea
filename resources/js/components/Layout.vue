@@ -39,6 +39,10 @@
 
 <script>
     import {login} from "../api/login";
+    import {getInfo} from "../api/user";
+    import adminRoutes from '../router/admin';
+    import defaultRoutes from '../router/routes';
+    import errorRoutes from '../router/error';
 
     export default {
         name: 'App',
@@ -46,15 +50,6 @@
             return {
                 isShowLogin: false,
                 isDoLogin: false,
-                isWindowContinueChange: false,
-                contentStyle: {
-                    height: '',
-                    display: 'flex',
-                    minHeight: '500px',
-                    minWidth: '900px',
-                    overflow: 'hidden',
-                    background: '#f2f2f2'
-                },
                 formData: {
                     email: '',
                     password: ''
@@ -73,14 +68,30 @@
                 }
             }
         },
-        beforeCreate() {
-            EBUS.$on('EVENT-USER-UNLOGIN', () => {
+        created() {
+            /* 获取登录人信息 */
+            getInfo().then(response => {
+                this.user.avatar = '/images/login.png';
+                /* 登录成功，通知组件刷新 */
+                EBUS.$emit('EVENT-USER-LOGIN', response.data);
+
+                if (this.$router.options.routes.length === 1) {
+                    if (Number(response.data.is_admin) === 1 ) {
+                        defaultRoutes.push.apply(defaultRoutes, [adminRoutes, errorRoutes]);
+                        this.$router.addRoutes(adminRoutes);
+                    } else {
+                        defaultRoutes.push.apply(defaultRoutes, errorRoutes);
+                    }
+
+                    this.$router.options.routes = defaultRoutes;
+                    this.$router.addRoutes(errorRoutes);
+                }
+
+            }).catch(() => {
+                this.$router.options.routes = defaultRoutes;
                 this.user.avatar = '/images/un-login.png';
                 this.isShowLogin = true;
             });
-        },
-        beforeDestroy() {
-            EBUS.$off('EVENT-USER-UNLOGIN');
         },
         methods: {
             handleLogin() {
@@ -88,7 +99,7 @@
                     if (valid) {
                         this.isDoLogin = true;
                         login(this.formData).then(response => {
-                            window.localStorage.setItem('gaea.token', response.data.token);
+                            window.localStorage.setItem('gaea.user', JSON.stringify(response.data));
                             this.user.name = response.data.name;
                             this.user.avatar = '/images/login.png';
                             this.isDoLogin = false;
@@ -100,6 +111,17 @@
                             });
                             /* 登录成功，通知组件刷新 */
                             EBUS.$emit('EVENT-USER-LOGIN', response.data);
+                            if (this.$router.options.routes.length === 1) {
+                                if (Number(response.data.is_admin) === 1 ) {
+                                    defaultRoutes.push.apply(defaultRoutes, [adminRoutes, errorRoutes]);
+                                    this.$router.addRoutes(adminRoutes);
+                                } else {
+                                    defaultRoutes.push.apply(defaultRoutes, errorRoutes);
+                                }
+
+                                this.$router.options.routes = defaultRoutes;
+                                this.$router.addRoutes(errorRoutes);
+                            }
                         }).catch(error => {
                             this.isDoLogin = false;
                         });

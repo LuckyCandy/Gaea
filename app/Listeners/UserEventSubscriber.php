@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\UserBlock;
 use App\Models\SysLog;
 use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -22,6 +23,18 @@ class UserEventSubscriber
         ))->save();
     }
 
+    public function handUserBlock($event)
+    {
+        $user = $event->user;
+
+        (new SysLog(
+            [
+                'operator_id' => $user->id,
+                'desc' => "账号{$user->name}" . ($user->isBlocked() ? '被禁止登陆' : '被解禁')
+            ]
+        ))->save();
+    }
+
     /**
      * 为事件订阅者注册监听器
      *
@@ -32,6 +45,11 @@ class UserEventSubscriber
         $events->listen(
             'Illuminate\Auth\Events\Login',
             'App\Listeners\UserEventSubscriber@handleUserLogin'
+        );
+
+        $events->listen(
+            UserBlock::class,
+            'App\Listeners\UserEventSubscriber@handUserBlock'
         );
     }
 }

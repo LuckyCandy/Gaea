@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Http\Guards\JwtGuard;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -38,6 +40,10 @@ class AppServiceProvider extends ServiceProvider
             $app->refresh('request', $guard, 'setRequest');
 
             return $guard;
+        });
+
+        DB::listen(function ($query) {
+            Log::debug('Sql:',[$query->sql, $query->bindings]);
         });
     }
 }
