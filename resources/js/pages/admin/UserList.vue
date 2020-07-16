@@ -142,12 +142,9 @@
         },
         methods: {
             resetSearchData() {
-                this.searchData = {
-                    name: '',
-                    email: '',
-                    is_block: '',
-                    page: 1
-                };
+                this.searchData.name = '';
+                this.searchData.email = '';
+                this.searchData.is_block = '';
             },
             enableRowEdit(row, index) {
                 this.rowStatus = row.is_block;

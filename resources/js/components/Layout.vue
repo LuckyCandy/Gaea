@@ -3,12 +3,17 @@
         <div class="lc-header">
             <div class="layout-logo"></div>
             <div class="user-control">
-                <Avatar :style="{width: '80px', height: '40px', borderRadius: 0}" :src="user.avatar"/>
+                <div v-if="isLogin" @click="logout">
+                    <img style="height: 30px;width: 30px" src="/images/log-out.png" />
+                </div>
+                <div v-else @click="isShowLogin = true">
+                    <img style="height: 30px;width: 30px" src="/images/log-in.png" />
+                </div>
             </div>
         </div>
 
         <div class="lc-content">
-            <router-view></router-view>
+            <router-view v-if="!isReload"></router-view>
         </div>
 
         <!-- 登录弹框 -->
@@ -50,6 +55,8 @@
             return {
                 isShowLogin: false,
                 isDoLogin: false,
+                isReload: false,
+                isLogin: false,
                 formData: {
                     email: '',
                     password: ''
@@ -61,17 +68,13 @@
                     email: [
                         { required: true, message: '', trigger: 'blur' },
                     ]
-                },
-                user: {
-                    name: '',
-                    avatar: '/images/login.png'
                 }
             }
         },
         created() {
             /* 获取登录人信息 */
             getInfo().then(response => {
-                this.user.avatar = '/images/login.png';
+                this.isLogin = true;
                 /* 登录成功，通知组件刷新 */
                 EBUS.$emit('EVENT-USER-LOGIN', response.data);
 
@@ -86,11 +89,10 @@
                     this.$router.options.routes = defaultRoutes;
                     this.$router.addRoutes(errorRoutes);
                 }
-
             }).catch(() => {
+                window.localStorage.removeItem('gaea.user');
                 this.$router.options.routes = defaultRoutes;
-                this.user.avatar = '/images/un-login.png';
-                this.isShowLogin = true;
+                this.isLogin = false;
             });
         },
         methods: {
@@ -100,8 +102,7 @@
                         this.isDoLogin = true;
                         login(this.formData).then(response => {
                             window.localStorage.setItem('gaea.user', JSON.stringify(response.data));
-                            this.user.name = response.data.name;
-                            this.user.avatar = '/images/login.png';
+                            this.isLogin = true;
                             this.isDoLogin = false;
                             this.isShowLogin = false;
                             this.handleReset();
@@ -122,8 +123,9 @@
                                 this.$router.options.routes = defaultRoutes;
                                 this.$router.addRoutes(errorRoutes);
                             }
-                        }).catch(error => {
+                        }).catch(() => {
                             this.isDoLogin = false;
+                            this.isLogin = false;
                         });
                     } else {
                         this.$Message.error('填写的信息有误，请检查');
@@ -134,13 +136,21 @@
                 this.formData = {
                     email: '', password: ''
                 }
+            },
+            logout() {
+                window.localStorage.removeItem('gaea.user');
+                this.isReload = true;
+                this.$nextTick(() => {
+                    this.isReload = false;
+                });
+                this.isLogin = false;
+                this.$Message.info('已退出登陆');
             }
         }
     }
 </script>
 
 <style scoped>
-    @import url("/css/app.css");
     .layout-logo{
         width: 150px;
         height: 40px;
@@ -153,7 +163,7 @@
     }
     .user-control{
         position: relative;
-        top: 15px;
+        top: 20px;
         float: right;
         right: 8px;
     }
@@ -172,10 +182,5 @@
         overflow: hidden;
         background: rgb(242, 242, 242);
         width: 100%;
-    }
-    .lc-footer {
-        height: 30px;
-        text-align: center;
-        background: white;
     }
 </style>

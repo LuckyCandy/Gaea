@@ -13,33 +13,27 @@
                     </a>
                     <List>
                         <ListItem>
-                            <ListItemMeta avatar="/images/icon-system.png" title="超管" description="点击右侧进入管理界面" />
-                            <template slot="action">
-                                <li>
-                                    <router-link to="/admin">跳转</router-link>
-                                </li>
-                            </template>
-                        </ListItem>
-                        <ListItem>
                             <ListItemMeta avatar="/images/icon-person.png" title="昵称" :description="userInfo.name" />
                         </ListItem>
                         <ListItem>
                             <ListItemMeta avatar="/images/icon-email.png" title="账号" :description="userInfo.email" />
                         </ListItem>
+                        <router-link v-if="Number(userInfo.is_admin) === 1" to="/admin/user/list">
+                            <ListItem >
+                                <ListItemMeta avatar="/images/icon-system.png" title="超管" description="点击进入管理界面" />
+                            </ListItem>
+                        </router-link>
                     </List>
                 </Card>
                 <Memorabilia></Memorabilia>
             </div>
             <div style="margin-top: 5px;background: white">
                 <List>
-                    <ListItem v-for="(product, index) in products" :key="index">
-                        <ListItemMeta :avatar="product.icon" :title="product.title" :description="product.desc" />
-                        <template slot="action">
-                            <li>
-                                <router-link :to="product.to">进入</router-link>
-                            </li>
-                        </template>
-                    </ListItem>
+                    <router-link v-for="(product, index) in products" :key="index" :to="product.to">
+                        <ListItem>
+                            <ListItemMeta :avatar="product.icon" :title="product.title" :description="product.desc" />
+                        </ListItem>
+                    </router-link>
                 </List>
             </div>
         </div>
@@ -47,14 +41,11 @@
             <Col :xs="11" :sm="10" :md="14" :lg="15" :xl="17" :xxl="19" style="height: 100%">
                 <div class="product-content">
                     <List :style="{background: 'white'}">
-                        <ListItem v-for="(product, index) in products" :key="index">
-                            <ListItemMeta :avatar="product.icon" :title="product.title" :description="product.desc" />
-                            <template slot="action">
-                                <li>
-                                    <router-link :to="product.to">进入</router-link>
-                                </li>
-                            </template>
-                        </ListItem>
+                        <router-link v-for="(product, index) in products" :key="index" :to="product.to">
+                            <ListItem>
+                                <ListItemMeta :avatar="product.icon" :title="product.title" :description="product.desc" />
+                            </ListItem>
+                        </router-link>
                     </List>
                 </div>
             </Col>
@@ -76,14 +67,11 @@
                             <ListItem>
                                 <ListItemMeta avatar="/images/icon-email.png" title="账号" :description="userInfo.email" />
                             </ListItem>
-                            <ListItem v-if="Number(userInfo.is_admin) === 1">
-                                <ListItemMeta avatar="/images/icon-system.png" title="超管" description="点击右侧进入管理界面" />
-                                <template slot="action">
-                                    <li>
-                                        <router-link to="/admin/user/list">跳转</router-link>
-                                    </li>
-                                </template>
-                            </ListItem>
+                            <router-link v-if="Number(userInfo.is_admin) === 1" to="/admin/user/list">
+                                <ListItem >
+                                    <ListItemMeta avatar="/images/icon-system.png" title="超管" description="点击进入管理界面" />
+                                </ListItem>
+                            </router-link>
                         </List>
                     </Card>
                     <Memorabilia></Memorabilia>

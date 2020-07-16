@@ -1,0 +1,5 @@
+GET http://local.gaea.cn/api/log/list?user=admin
+Accept: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTQ4OTYxNTYsImlzcyI6IkdhZWEiLCJpYXQiOjE1OTQ4NjQ5NTYsImRhdGEiOnsiaWQiOjF9fQ.F3JKGXFJ4vsjR6cWQszm_IyQWouD2Bx0QuxXDPNyy44
+
+###

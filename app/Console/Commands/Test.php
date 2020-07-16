@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\SysLog;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
@@ -38,6 +39,6 @@ class Test extends Command
      */
     public function handle()
     {
-        echo Carbon::now();
+        echo \Illuminate\Support\Carbon::createFromTimeString('2020-07-16 16:19:03')->toJSON();
     }
 }

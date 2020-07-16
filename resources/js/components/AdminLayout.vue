@@ -11,22 +11,18 @@
             <div class="admin-content">
                 <div class="admin-menu">
                     <Menu active-name="1">
-                        <MenuGroup title="用户管理">
-                            <MenuItem name="1" :to="{name: 'admin-user-list'}">
-                                <Icon type="md-document" />
-                                所有用户
-                            </MenuItem>
-                            <MenuItem name="2" :to="{name: 'admin-user-create'}">
-                                <Icon type="md-chatbubbles" />
-                                新增用户
-                            </MenuItem>
-                        </MenuGroup>
-                        <MenuGroup title="日志分析">
-                            <MenuItem name="3" :to="{name: 'admin-log-list'}">
-                                <Icon type="md-heart" />
-                                日志列表
-                            </MenuItem>
-                        </MenuGroup>
+                        <MenuItem name="0" :to="{name: 'dashboard'}">
+                            <Icon type="ios-arrow-back" />
+                            返回首页
+                        </MenuItem>
+                        <MenuItem name="1" :to="{name: 'admin-user-list'}">
+                            <Icon type="ios-people" />
+                            所有用户
+                        </MenuItem>
+                        <MenuItem name="2" :to="{name: 'admin-log-list'}">
+                            <Icon type="ios-paper" />
+                            日志列表
+                        </MenuItem>
                     </Menu>
 
                 </div>
