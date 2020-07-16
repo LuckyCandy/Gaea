@@ -48,7 +48,7 @@ class UserCreator extends Command
 
         if ($this->createUser($name, $password)) {
             $this->info("Account:".$this->argument('email').",密码:{$password}");
-            Artisan::call('notify:pass', ['email' => $this->argument('email')]);
+            return Artisan::call('notify:pass', ['email' => $this->argument('email')]);
         } else {
             throw new CustomException('创建用户失败');
         }
