@@ -20,8 +20,8 @@
                 原密码:
             </Col>
             <Col span="20" :style="passwdControl">
-                <Input type="text" v-model="formModel.password">
-                    <Icon type="ios-person-outline" slot="prepend"></Icon>
+                <Input type="password" v-model="formModel.password">
+                    <Icon type="ios-settings" slot="prepend"></Icon>
                 </Input>
             </Col>
         </Row>
@@ -30,8 +30,8 @@
                 新密码:
             </Col>
             <Col span="20" :style="newPasswdControl">
-                <Input type="text" v-model="formModel.new_password">
-                    <Icon type="ios-person-outline" slot="prepend"></Icon>
+                <Input type="password" v-model="formModel.new_password">
+                    <Icon type="ios-settings" slot="prepend"></Icon>
                 </Input>
             </Col>
         </Row>

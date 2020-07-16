@@ -7,7 +7,7 @@ import ViewUI from 'view-design';
 
 
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-axios.defaults.baseURL = '';
+axios.defaults.baseURL = 'http://local.gaea.cn/';
 
 /* 请求拦截器添加访问凭证 */
 axios.interceptors.request.use(

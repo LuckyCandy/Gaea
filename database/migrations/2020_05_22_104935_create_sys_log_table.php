@@ -15,6 +15,7 @@ class CreateSysLogTable extends Migration
     {
         Schema::create('sys_log', function (Blueprint $table) {
             $table->id();
+            $table->tinyInteger('type')->comment('操作类型');
             $table->integer('operator_id')->comment('操作人');
             $table->string('desc')->comment('描述');
             $table->timestamps();

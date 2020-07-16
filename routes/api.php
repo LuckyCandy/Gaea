@@ -31,6 +31,8 @@ Route::middleware('auth:api')->group(function (){
         Route::post('/user/password/reset', 'UserController@resetPassword');
         /* 新增用户 */
         Route::post('/user/create', 'UserController@create');
+        /* 日志列表 */
+        Route::get('/log/list', 'LogController@list');
     });
     /* 获取用户信息 */
     Route::get('/user', 'UserController@user');

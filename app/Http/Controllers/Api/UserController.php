@@ -82,9 +82,11 @@ class UserController extends Controller
             'email' => 'bail|required|email',
         ])->validate();
 
-        dd(Artisan::call('user:create', [
+        $result = Artisan::call('user:create', [
             'email' => $request->get('email'),
             '--admin' => false
-        ]));
+        ]);
+
+        return $result ?  response()->jsr() : response()->jsr(500, [], '创建用户失败');
     }
 }

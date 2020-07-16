@@ -199,4 +199,7 @@
     /deep/ .ivu-split-wrapper {
         height: auto;
     }
+    /deep/ .redis-client-search-content .ivu-table-row {
+        cursor: pointer;
+    }
 </style>

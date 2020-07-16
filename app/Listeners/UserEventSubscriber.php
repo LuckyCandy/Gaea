@@ -17,8 +17,9 @@ class UserEventSubscriber
 
         (new SysLog(
             [
+                'type' => SysLog::TYPE_LOGIN,
                 'operator_id' => $user->id,
-                'desc' => "账号{$user->name}登录系统"
+                'desc' => "用户{$user->name}登录系统"
             ]
         ))->save();
     }
@@ -29,8 +30,9 @@ class UserEventSubscriber
 
         (new SysLog(
             [
+                'type' => SysLog::TYPE_BLOCK,
                 'operator_id' => $user->id,
-                'desc' => "账号{$user->name}" . ($user->isBlocked() ? '被禁止登陆' : '被解禁')
+                'desc' => "用户{$user->name}" . ($user->isBlocked() ? '被禁止登陆' : '被解禁')
             ]
         ))->save();
     }
