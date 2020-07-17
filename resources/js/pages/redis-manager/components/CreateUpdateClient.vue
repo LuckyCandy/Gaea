@@ -78,7 +78,6 @@
             },
             openForUpdate(data) {
                 this.formModel = data;
-                console.log('11111111111', this.formModel);
                 this.isCreate = false;
                 this.isShow = true;
             },
