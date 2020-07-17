@@ -93,6 +93,9 @@
                 window.localStorage.removeItem('gaea.user');
                 this.$router.options.routes = defaultRoutes;
                 this.isLogin = false;
+                setTimeout(() => {
+                    this.isShowLogin = true;
+                }, 500);
             });
         },
         methods: {
