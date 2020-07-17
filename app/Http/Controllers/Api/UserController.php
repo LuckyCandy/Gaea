@@ -90,3 +90,4 @@ class UserController extends Controller
         return $result ?  response()->jsr() : response()->jsr(500, [], '创建用户失败');
     }
 }
+

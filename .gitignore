@@ -3,6 +3,7 @@
 /public/fonts
 /public/mix-manifest.json
 /public/storage
+/public/fonts
 /public/*.js
 /public/js/*.js
 /storage/*.key
