@@ -26,7 +26,7 @@ class ClientController extends \App\Http\Controllers\Controller
 
     public function create(RedisClientRequest $request)
     {
-        $params = $request->only(['name', 'password', 'port', 'address', 'db_no']);
+        $params = $request->only(['name', 'password', 'port', 'address', 'db']);
 
         if ($this->testConnection(
             Arr::get($params, 'address'), Arr::get($params, 'password'), Arr::get($params, 'port')
@@ -51,7 +51,7 @@ class ClientController extends \App\Http\Controllers\Controller
             return response()->jsr(500, [], '服务已被删除，更新失败~');
         }
 
-        $params = $request->only(['name', 'password', 'port', 'address', 'db_no']);
+        $params = $request->only(['name', 'password', 'port', 'address', 'db']);
         if ($this->testConnection(
             Arr::get($params, 'address'), Arr::get($params, 'password') ?? $client->password, Arr::get($params, 'port')
         )) {
