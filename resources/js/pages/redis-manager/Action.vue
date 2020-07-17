@@ -13,7 +13,7 @@
         </Breadcrumb>
         <div class="action-content">
             <div class="action-area">
-                <ActionTable ref="actionTable"></ActionTable>
+                <ActionTable :mydb="this.$route.params.db" ref="actionTable"></ActionTable>
             </div>
             <div class="client-info">
                 <Collapse v-model="collapseName" simple>

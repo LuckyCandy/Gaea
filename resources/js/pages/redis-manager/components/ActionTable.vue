@@ -58,6 +58,9 @@
     export default {
         name: "ActionTable",
         components: {Information},
+        props: {
+            mydb: 0
+        },
         data() {
             return {
                 isSearchLoading: false,
@@ -95,7 +98,17 @@
                 ]
             }
         },
+        watch: {
+            mydb: {
+                handler: function handler(newValue, oldValue) {
+                    console.log(oldValue, '->', newValue);
+                    this.searchBox.db = newValue;
+                },
+                immediate: true
+            }
+        },
         created() {
+            console.log('11111111111111111111111')
             this.startSearch();
         },
         methods: {
