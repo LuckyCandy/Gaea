@@ -21,7 +21,6 @@ class CreateRedisClientsTable extends Migration
             $table->string('password')->comment('连接密码');
             $table->integer('port', false, true)->default('6379')->comment('端口号');
             $table->tinyInteger('db', false, true)->comment('默认选择连接的db');
-            $table->boolean('is_working')->default(false)->comment('是否正在使用');
             $table->timestamps();
         });
     }

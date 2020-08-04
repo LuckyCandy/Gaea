@@ -81,14 +81,8 @@ class ClientController extends \App\Http\Controllers\Controller
     {
         $user = auth()->user();
         $client = RedisClient::where('user_id', $user->id)->where('id', $id)->first();
-        if (!$client) {
-            return response()->jsr(500, [], '选择的服务已被删除，请重新选择');
-        }
-        if (!$client->is_working) {
-            $client->is_working = true;
-            if (!Cache::put(CacheKeyStore::getRedisClientCacheKey($user->id), $client) || !$client->save()) {
-                return response()->jsr(500, [], '未知错误，请重试');
-            }
+        if (!$client || !Cache::put(CacheKeyStore::getRedisClientCacheKey($user->id), $client)) {
+            return response()->jsr(500, [], '未知错误，请重试');
         }
         /* 缓存当前配置 */
         $manager = $this->_getRedisManager($client->address, $client->password, $client->port);
